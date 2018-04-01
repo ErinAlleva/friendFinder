@@ -15,7 +15,7 @@ if (isset($_POST["submit"]) && isset($_POST['firstname']) && isset($_POST['lastn
   && isset($_POST['sport1']) && isset($_POST['sportLevel1']) && isset($_POST['sportType1']) && isset($_POST['sportClassification1'])
   && isset($_POST['club1']) && isset($_POST['clubType1']) && isset($_POST['clubInvolvement1']) && isset($_POST['clubStatus1'])
   && isset($_POST['show']) && isset($_POST['showGenre']) && isset($_POST['movieYear'])
-  && isset($_POST['song']) && isset($_POST['songYear'])  
+  && isset($_POST['song']) && isset($_POST['songArtist'])  
   ){
 
   //header("Location: index.php");
@@ -58,6 +58,28 @@ if (isset($_POST["submit"]) && isset($_POST['firstname']) && isset($_POST['lastn
     $stmt_thr->execute();
     $stmt_thr->close();
     
+    $song = $_POST['song'];
+    $songArtist = $_POST['songArtist'];
+   // VALUES ([value-1],[value-2],[value-3])
+    $stmt_fou = $link->prepare("INSERT INTO Likes(compID, title, artist) VALUES (?, ?, ?)");
+    $stmt_fou->bind_param("sss", $compID, "", $song, $songArtist);
+    $stmt_fou->execute();
+    $stmt_fou->close();
+
+    $club1 = $_POST['club1'];
+    $clubInvolvement1 = $_POST['clubInvolvement1'];
+    $clubStatus1 = $_POST['clubStatus1'];
+    $stmt_fiv = $link->prepare("INSERT INTO Participates_In(compID, club_name, level_of_involvement, status) VALUES (?, ?, ?, ?)");
+    $stmt_fiv->bind_param("sssss", $compID, $club1, $clubInvolvement1, $clubStatus1);
+    $stmt_fiv->execute();
+    $stmt_fiv->close();
+    
+    $show = $_POST['show'];
+    $stmt_six = $link->prepare("INSERT INTO `Watches`(`compID`, `show_name`) VALUES (?, ?)");
+    $stmt_six->bind_param("ss", $compID, $show);
+    $stmt_six->execute();
+    $stmt_six->close();
+
     $link->close();
     
 }
@@ -310,7 +332,7 @@ mysqli_close($link);
       Favorite Song:
       <input type = "text" name = "song" class = "inputform" placeholder="Song Title" required/>
       Year:
-      <input id="year2" name="songYear" type="number" min="1800" max="2019" class = "inputform" required>
+      <input id="songArtist" name="songArtist" type="text" class = "inputform" required>
       <!--<select id = "years2" name = "songYear" class = "inputform"></select>-->
       <br />
       <br />
