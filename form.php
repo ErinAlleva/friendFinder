@@ -1,124 +1,71 @@
 <?php
 
-$link = mysqli_connect("localhost", "root", "p", "baewatch");
+$link = mysqli_connect("https://stardock.cs.virginia.edu/pma/", "cs4750eaa4deb", "spring2018", "cs4750eaa4de");
  
 // Check connection
 if($link === false){
     die("ERROR: Could not connect. " . mysqli_connect_error());
 }
 //header("Location: index.php");
-if (isset($_POST["submitbtn"]) && isset($_POST['firstname']) && isset($_POST['lastname']) && isset($_POST['username']) && isset($_POST['email']) && isset($_POST['birthdate']) && isset($_POST['gender']) && isset($_POST['password'])){
+if (isset($_POST["submit"]) && isset($_POST['firstname']) && isset($_POST['lastname'] && isset($_POST['compID'])) 
+  && isset($_POST['age']) && isset($_POST['gender']) && isset($_POST['school']) 
+  && isset($_POST['gender']) && isset($_POST['school'])
+  && isset($_POST['major1']) 
+  && isset($_POST['hobby1']) && isset($_POST['hobbyLevel1']) && isset($_POST['hobbyType1'])
+  && isset($_POST['sport1']) && isset($_POST['sportLevel1']) && isset($_POST['sportType1']) && isset($_POST['sportClassification1'])
+  && isset($_POST['club1']) && isset($_POST['clubType1']) && isset($_POST['clubInvolvement1']) && isset($_POST['clubStatus1'])
+  && isset($_POST['show']) && isset($_POST['showGenre']) && isset($_POST['movieYear'])
+  && isset($_POST['song']) && isset($_POST['songYear'])  
+  ){
 
   //header("Location: index.php");
 
-  $firstnameInsert = $_POST['firstname'];
-    $lastnameInsert = $_POST['lastname'];
-    $usernameInsert = $_POST['username'];
-    $emailInsert = $_POST['email'];
-    $birthdateInsert = $_POST['birthdate'];
-    $genderInsert = $_POST['gender'];
-    $passwordInsert = password_hash($_POST['confirm_password'], PASSWORD_DEFAULT);
+    $firstname = $_POST['firstname'];
+    $lastname = $_POST['lastname'];
+    $compID = $_POST['compID'];
+    $age = $_POST['email'];
+    $gender = $_POST['gender'];
+    $stmt = $link->prepare("INSERT INTO Person (compID, gender, first_name, last_name, age) VALUES (?, ?, ?, ?, ?)");
+    $stmt->bind_param("sssss", $compID, $gender, $firstname, $lastname, $age);
+    $stmt->execute();
+    $stmt->close();
 
-  $stmt = $link->prepare("SELECT * FROM users WHERE username = ? OR email = ?");
-  $stmt->bind_param("ss", $usernameInsert, $emailInsert);
-  $result = $stmt->execute();
-
-  /*$stem = $link->prepare("SELECT * FROM users WHERE email = ?");
-  $stem->bind_param("s", $emailInsert);
-  $res = $stem->execute();*/
-  //check if username is taken
-  $assoc_array = array();
-  while($row = $stmt->fetch()){
-    array_push($assoc_array, $row);
-  }
-  //check is email is taken
-  /*
-  $assoc_array_em = array();
-  while($row_em = $stem->fetch()){
-    array_push($assoc_array_em, $row_em);
-  }*/
-  //if both are taken
-  /*if (count($assoc_array_em) >= 1 && count($assoc_array) >= 1) {
-      echo '<script> bothTaken(); </script>';  
-    } */
-    if (count($assoc_array) >= 1) {
-      echo '<script> userTaken(); </script>'; 
-    }/*
-    else if (count($assoc_array_em) >= 1) {
-      echo '<script> emailTaken(); </script>';
-    }*/
-    else {
-      //$sql = "INSERT INTO users (name, email, address, city, state, zipcode, password) 
-      //VALUES ('$usernameInsert', '$emailInsert', '$addressInsert', '$cityInsert', '$stateInsert', '$zipcodeInsert', '$passwordInsert')";
-     echo '<script> userNotTaken(); </script>';
-
-     $stmt_two = $link->prepare("INSERT INTO users (firstname, lastname, username, email, birthdate, gender, password) VALUES (?, ?, ?, ?, ?, ?, ?)");
-  
-   $stmt_two->bind_param("sssssss", $firstnameInsert, $lastnameInsert, $usernameInsert, $emailInsert, $birthdateInsert, $genderInsert, $passwordInsert);
-
-
-      if($stmt_two->execute()){
-          echo "Records added successfully.";
-          //header("Location: success.php");
-          $stmt_two->close();
-      //$link->close();
-      } else{
-        
-          echo "ERROR: Could not able to execute $sql. " . mysqli_error($link);
-          
-      }
-
-     // function SendMail( $ToEmail) {
-      require "PHPMailer/src/PHPMailer.php";
-      require "PHPMailer/src/OAuth.php";
-      require "PHPMailer/src/SMTP.php";
-      require "PHPMailer/src/POP3.php";
-      require "PHPMailer/src/Exception.php";
-
-
-      $mail = new PHPMailer\PHPMailer\PHPMailer();
-
-      //$mail->SMTPDebug = 4;                               // Enable verbose debug output
-
-      $mail->isSMTP();                                      // Set mailer to use SMTP
-      $mail->Host = 'smtp.gmail.com;';  // Specify main and backup SMTP servers
-      $mail->SMTPAuth = true;                               // Enable SMTP authentication
-      $mail->Username = 'baewatch.help@gmail.com';                 // SMTP username
-      $mail->Password = 'HelloHello!';                           // SMTP password
-      $mail->SMTPSecure = 'tls';                            // Enable TLS encryption, `ssl` also accepted
-      $mail->Port = 587;                                    // TCP port to connect to
-
-      $mail->setFrom('baewatch.help@gmail.com', 'baeWatch Support');
-      $mail->addAddress($emailInsert, $usernameInsert);     // Add a recipient
-
-      $mail->isHTML(true);                                  // Set email format to HTML
-
-      $mail->Subject = 'Welcome to baeWatch, '. $firstnameInsert. '!';
-      //$mail->AddEmbeddedImage('images/email.gif', 'jake');
-      $mail->Body    = 'Thanks for joining! We look forward to you finding the one! <br> <br> <img src="https://media1.tenor.com/images/94d31b39f65d8bf4fd3e0aa1c1d0d6a8/tenor.gif?itemid=4347501" style="height: 60%; width: 60%;"/> <br> <br> Sincerely, <br> baeWatch Team';
-      //$mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
-      $mail->SMTPOptions = array(
-        'ssl' => array(
-            'verify_peer' => false,
-            'verify_peer_name' => false,
-            'allow_self_signed' => true
-        )
-    );
-      if(!$mail->send()) {
-          echo 'Message could not be sent.';
-          echo 'Mailer Error: ' . $mail->ErrorInfo;
-      } else {
-          echo 'Message has been sent';
-      }
-    
-    //header("Location: login.php");
-      //$link->close();
+    $major = $_POST['major1'];
+    $major2 = "null";
+    $minor = "null";
+    $school = $_POST['school'];
+    if (isset($_POST['major2']) && isset($_POST['minor'])){
+      $major2 = $_POST['major2'];
+      $minor = $_POST['minor'];
     }
+    $stmt_one = $link->prepare("INSERT INTO Studies(compID, uni_name, major1, major2, minor) VALUES (?, ?, ?, ?, ?)");
+    $stmt_one->bind_param("sssss", $compID, $school, $major1, $major2, $minor);
+    $stmt_one->execute();
+    $stmt_one->close();
+
+    //INSERT INTO `Enjoys`(`compID`, `hobby_name`, `skill_level`, `sport_name`) VALUES ([value-1],[value-2],[value-3],[value-4])
+    $hobby1 = $_POST['hobby1'];
+    $hobbyLevel1 = $_POST['hobbyLevel1'];
+    $stmt_two = $link->prepare("INSERT INTO Enjoys(compID, hobby_name, skill_level, sport_name) VALUES (?, ?, ?, ?)");
+    $stmt_two->bind_param("ssss", $compID, $hobby1, $hobbyLevel1, "");
+    $stmt_two->execute();
+    $stmt_two->close();
+
+    $sport1 = $_POST['sport1'];
+    $sportLevel1 = $_POST['sportLevel1'];
+    $stmt_thr = $link->prepare("INSERT INTO Enjoys(compID, hobby_name, skill_level, sport_name) VALUES (?, ?, ?, ?)");
+    $stmt_thr->bind_param("ssss", $compID, "", $sportLevel1, $sport1);
+    $stmt_thr->execute();
+    $stmt_thr->close();
+    
+    $link->close();
+    
 }
 
 // Close connection
 mysqli_close($link);
 ?>
+
 <!DOCTYPE html>
 <html>
 
@@ -158,12 +105,12 @@ mysqli_close($link);
       <br />
       Computing ID:
       <br />
-      <input type = "text" name="eventDescription" class = "inputform" placeholder="mst3k" required/>
+      <input type = "text" name="compID" class = "inputform" placeholder="mst3k" required/>
       <br />
       Age: 
-      <input type="number" min="1" max="100" value="1" class = "inputform" required>
+      <input type="number" name="age" min="1" max="100" value="1" class = "inputform" required>
       Gender:
-      <select name="State" size="1" class = "inputform" required>
+      <select name="gender" size="1" class = "inputform" required>
                 <option value="Select">Select</option>
                 <option value="Female">Female</option>
                 <option value="Male">Male</option>
@@ -369,7 +316,7 @@ mysqli_close($link);
       <br />
 
 
-      <input type="submit" value="Submit" />
+      <input type="submit" name="submit" value="Submit" />
 
     </form>
   
