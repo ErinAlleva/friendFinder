@@ -1,13 +1,27 @@
 <?php
+class DbUtil{
+ public static $user = "CS4750eaa4deb";
+ public static $pass = "spring2018";
+ public static $host = "stardock.cs.virginia.edu";
+ public static $schema = "CS4750eaa4de";
 
-$link = mysqli_connect("https://stardock.cs.virginia.edu/pma/", "cs4750eaa4deb", "spring2018", "cs4750eaa4de");
+ public static function loginConnection() {
+ $link = new mysqli(DbUtil::$host, DbUtil::$user,
+ DbUtil::$pass, DbUtil::$schema);
+ if($link->connect_errno) {
+ echo "fail";
+ $link->close();
+ exit();
+ }
+ return $db;
+ }
+ }
+
+//$link = mysqli_connect("https://stardock.cs.virginia.edu/pma/", "cs4750eaa4deb", "spring2018", "cs4750eaa4de");
  
-// Check connection
-if($link === false){
-    die("ERROR: Could not connect. " . mysqli_connect_error());
-}
+
 //header("Location: index.php");
-if (isset($_POST["submit"]) && isset($_POST['firstname']) && isset($_POST['lastname'] && isset($_POST['compID'])) 
+if ( isset($_POST['submit']) && ($_POST['firstname']!=NULL) && ($_POST['lastname']!=NULL) && ($_POST['compID']!=NULL)
   && isset($_POST['age']) && isset($_POST['gender']) && isset($_POST['school']) 
   && isset($_POST['gender']) && isset($_POST['school'])
   && isset($_POST['major1']) 
@@ -85,7 +99,7 @@ if (isset($_POST["submit"]) && isset($_POST['firstname']) && isset($_POST['lastn
 }
 
 // Close connection
-mysqli_close($link);
+
 ?>
 
 <!DOCTYPE html>
@@ -338,7 +352,7 @@ mysqli_close($link);
       <br />
 
 
-      <input type="submit" name="submit" value="Submit" />
+      <input type="submit" id="submit" name="submit" value="Submit" />
 
     </form>
   
