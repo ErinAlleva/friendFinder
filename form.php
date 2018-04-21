@@ -1,22 +1,23 @@
 <?php
 class DbUtil{
- public static $user = "CS4750eaa4deb";
- public static $pass = "spring2018";
- public static $host = "stardock.cs.virginia.edu";
- public static $schema = "CS4750eaa4de";
+   public static $user = "CS4750eaa4deb";
+   public static $pass = "spring2018";
+   public static $host = "stardock.cs.virginia.edu";
+   public static $schema = "CS4750eaa4de";
 
- public static function loginConnection() {
- $link = new mysqli(DbUtil::$host, DbUtil::$user,
- DbUtil::$pass, DbUtil::$schema);
- if($link->connect_errno) {
- echo "fail";
- $link->close();
- exit();
- }
- return $db;
- }
- }
+   public static function loginConnection() {
+      $db = new mysqli(DbUtil::$host, DbUtil::$user,
+      DbUtil::$pass, DbUtil::$schema);
+      if($db->connect_errno) {
+        echo "fail";
+        $db->close();
+        exit();
+      }
+      return $db;
+  }
 
+}
+$link = DbUtil::loginConnection();
 //$link = mysqli_connect("https://stardock.cs.virginia.edu/pma/", "cs4750eaa4deb", "spring2018", "cs4750eaa4de");
  
 
@@ -28,7 +29,7 @@ if ( isset($_POST['submit']) && ($_POST['firstname']!=NULL) && ($_POST['lastname
   && isset($_POST['hobby1']) && isset($_POST['hobbyLevel1']) && isset($_POST['hobbyType1'])
   && isset($_POST['sport1']) && isset($_POST['sportLevel1']) && isset($_POST['sportType1']) && isset($_POST['sportClassification1'])
   && isset($_POST['club1']) && isset($_POST['clubType1']) && isset($_POST['clubInvolvement1']) && isset($_POST['clubStatus1'])
-  && isset($_POST['show']) && isset($_POST['showGenre']) && isset($_POST['movieYear'])
+  && isset($_POST['show']) && isset($_POST['movieYear'])
   && isset($_POST['song']) && isset($_POST['songArtist'])  
   ){
 
@@ -37,7 +38,7 @@ if ( isset($_POST['submit']) && ($_POST['firstname']!=NULL) && ($_POST['lastname
     $firstname = $_POST['firstname'];
     $lastname = $_POST['lastname'];
     $compID = $_POST['compID'];
-    $age = $_POST['email'];
+    $age = $_POST['age'];
     $gender = $_POST['gender'];
     $stmt = $link->prepare("INSERT INTO Person (compID, gender, first_name, last_name, age) VALUES (?, ?, ?, ?, ?)");
     $stmt->bind_param("sssss", $compID, $gender, $firstname, $lastname, $age);
@@ -57,18 +58,22 @@ if ( isset($_POST['submit']) && ($_POST['firstname']!=NULL) && ($_POST['lastname
     $stmt_one->execute();
     $stmt_one->close();
 
+
+    $emptystring = "";
+
+
     //INSERT INTO `Enjoys`(`compID`, `hobby_name`, `skill_level`, `sport_name`) VALUES ([value-1],[value-2],[value-3],[value-4])
     $hobby1 = $_POST['hobby1'];
     $hobbyLevel1 = $_POST['hobbyLevel1'];
     $stmt_two = $link->prepare("INSERT INTO Enjoys(compID, hobby_name, skill_level, sport_name) VALUES (?, ?, ?, ?)");
-    $stmt_two->bind_param("ssss", $compID, $hobby1, $hobbyLevel1, "");
+    $stmt_two->bind_param("ssss", $compID, $hobby1, $hobbyLevel1, $emptystring);
     $stmt_two->execute();
     $stmt_two->close();
 
     $sport1 = $_POST['sport1'];
     $sportLevel1 = $_POST['sportLevel1'];
     $stmt_thr = $link->prepare("INSERT INTO Enjoys(compID, hobby_name, skill_level, sport_name) VALUES (?, ?, ?, ?)");
-    $stmt_thr->bind_param("ssss", $compID, "", $sportLevel1, $sport1);
+    $stmt_thr->bind_param("ssss", $compID, $emptystring, $sportLevel1, $sport1);
     $stmt_thr->execute();
     $stmt_thr->close();
     
@@ -76,7 +81,7 @@ if ( isset($_POST['submit']) && ($_POST['firstname']!=NULL) && ($_POST['lastname
     $songArtist = $_POST['songArtist'];
    // VALUES ([value-1],[value-2],[value-3])
     $stmt_fou = $link->prepare("INSERT INTO Likes(compID, title, artist) VALUES (?, ?, ?)");
-    $stmt_fou->bind_param("sss", $compID, "", $song, $songArtist);
+    $stmt_fou->bind_param("sss", $compID, $song, $songArtist);
     $stmt_fou->execute();
     $stmt_fou->close();
 
@@ -84,7 +89,7 @@ if ( isset($_POST['submit']) && ($_POST['firstname']!=NULL) && ($_POST['lastname
     $clubInvolvement1 = $_POST['clubInvolvement1'];
     $clubStatus1 = $_POST['clubStatus1'];
     $stmt_fiv = $link->prepare("INSERT INTO Participates_In(compID, club_name, level_of_involvement, status) VALUES (?, ?, ?, ?)");
-    $stmt_fiv->bind_param("sssss", $compID, $club1, $clubInvolvement1, $clubStatus1);
+    $stmt_fiv->bind_param("ssss", $compID, $club1, $clubInvolvement1, $clubStatus1);
     $stmt_fiv->execute();
     $stmt_fiv->close();
     
@@ -132,11 +137,11 @@ if ( isset($_POST['submit']) && ($_POST['firstname']!=NULL) && ($_POST['lastname
 
   <div id = "main" class="sectionDiv" style="display:flex;justify-content:center;align-items:center;">
 
-    <form name="my_form" onsubmit="return validateForm()" action="friendInfo.html" method="POST" />
+    <form name="my_form" onsubmit="return validateForm()" action="" method="POST" />
       Name:
       <br />
-      <input type="text" name="firstName" class = "inputform" placeholder="First Name" required/>
-      <input type="text" name="lastName" class = "inputform" placeholder="Last Name" required/>
+      <input type="text" name="firstname" class = "inputform" placeholder="First Name" required/>
+      <input type="text" name="lastname" class = "inputform" placeholder="Last Name" required/>
       <br />
       <br />
       Computing ID:
@@ -337,7 +342,7 @@ if ( isset($_POST['submit']) && ($_POST['firstname']!=NULL) && ($_POST['lastname
       Favorite Show:
       <input type = "text" name = "show" class = "inputform" placeholder="Movie Title" required/>
       Genre:
-      <select id = "genreList" name = "showGenre" class = "inputform" required></select>
+      <select id = "genreList" name = "genreList" class = "inputform"></select>
       Year:
       <input id="years" name="movieYear" type="number" min="1800" max="2019" class = "inputform" required>
       <!--<select id = "years" name = "movieYear" class = "inputform"></select>-->
@@ -345,7 +350,7 @@ if ( isset($_POST['submit']) && ($_POST['firstname']!=NULL) && ($_POST['lastname
        
       Favorite Song:
       <input type = "text" name = "song" class = "inputform" placeholder="Song Title" required/>
-      Year:
+      Artist:
       <input id="songArtist" name="songArtist" type="text" class = "inputform" required>
       <!--<select id = "years2" name = "songYear" class = "inputform"></select>-->
       <br />
