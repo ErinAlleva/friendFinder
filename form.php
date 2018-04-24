@@ -21,7 +21,7 @@ class DbUtil{
 $link = DbUtil::loginConnection();
 //$link = mysqli_connect("https://stardock.cs.virginia.edu/pma/", "cs4750eaa4deb", "spring2018", "cs4750eaa4de");
  
-echo "hi";
+//echo "hi";
 //header("Location: index.php");
 if ( isset($_POST['submit']) && ($_POST['firstname']!=NULL) && ($_POST['lastname']!=NULL) && ($_POST['compID']!=NULL)
   && isset($_POST['age'])
@@ -35,7 +35,7 @@ if ( isset($_POST['submit']) && ($_POST['firstname']!=NULL) && ($_POST['lastname
   ){
 
   //header("Location: index.php");
-    echo "hello??";
+    //echo "hello??";
 
     $firstname = ucwords(trim($_POST['firstname']));
     $lastname = ucwords(trim($_POST['lastname']));
@@ -56,7 +56,7 @@ if ( isset($_POST['submit']) && ($_POST['firstname']!=NULL) && ($_POST['lastname
       $minor = $_POST['minor'];
     }
     $stmt_one = $link->prepare("INSERT INTO Studies(compID, uni_name, major1, major2, minor) VALUES (?, ?, ?, ?, ?)");
-    $stmt_one->bind_param("sssss", $compID, $school, $major1, $major2, $minor);
+    $stmt_one->bind_param("sssss", $compID, $school, $major, $major2, $minor);
     $stmt_one->execute();
     $stmt_one->close();
 
@@ -90,7 +90,7 @@ if ( isset($_POST['submit']) && ($_POST['firstname']!=NULL) && ($_POST['lastname
     $club1 = ucwords(trim($_POST['club1']));
     $clubInvolvement1 = $_POST['clubInvolvement1'];
     $clubStatus1 = $_POST['clubStatus1'];
-    $stmt_fiv = $link->prepare("INSERT INTO Participates_In(compID, club_name, level_of_involvement, status) VALUES (?, ?, ?, ?)");
+    $stmt_fiv = $link->prepare("INSERT INTO Participates_In (compID, club_name, level_of_involvement, status) VALUES (?, ?, ?, ?)");
     $stmt_fiv->bind_param("ssss", $compID, $club1, $clubInvolvement1, $clubStatus1);
     $stmt_fiv->execute();
     $stmt_fiv->close();
@@ -105,7 +105,7 @@ if ( isset($_POST['submit']) && ($_POST['firstname']!=NULL) && ($_POST['lastname
     echo "form submitted";
 
 
-    $user_arr = array( $compID, $age, $major1, $major2, $minor, $school, $hobby1, $hobbyLevel1, $sport1, $sportLevel1, $song, $songArtist, $club1, $clubInvolvement1, $clubStatus1, $show );
+    $user_arr = array( $compID, $age, $major, $major2, $minor, $school, $hobby1, $hobbyLevel1, $sport1, $sportLevel1, $song, $songArtist, $club1, $clubInvolvement1, $clubStatus1, $show );
 
     $sql = "SELECT compID FROM Person WHERE compID != '".$compID."'";
     $result = mysqli_query($link,$sql);
@@ -114,15 +114,19 @@ if ( isset($_POST['submit']) && ($_POST['firstname']!=NULL) && ($_POST['lastname
     // output data of each row
         
         while($row = $result->fetch_assoc()) {
+            echo $row["compID"];
+
             $sim_count[$row["compID"]] = 0;
             $enjoysS = "SELECT * FROM Enjoys WHERE compID = '".$row["compID"]."'";
             $enjoys = mysqli_query($link, $enjoysS);
             $enjoys_row = $enjoys->fetch_assoc();
             if ($enjoys_row["hobby_name"] == $user_arr[6]){
                 $sim_count[$row["compID"]] += 1;
+                echo $enjoys_row["hobby_name"];
             }
-            if ($enjoys_row["sport_name"] == $user_arr[6]){
+            if ($enjoys_row["sport_name"] == $user_arr[8]){
                 $sim_count[$row["compID"]] += 1;
+                echo $enjoys_row["sport_name"];
             }
 
             $likesS = "SELECT * FROM Likes WHERE compID = '".$row["compID"]."'";
@@ -130,9 +134,11 @@ if ( isset($_POST['submit']) && ($_POST['firstname']!=NULL) && ($_POST['lastname
             $likes_row = $likes->fetch_assoc();
             if ($likes_row["title"] == $user_arr[10]){
                 $sim_count[$row["compID"]] += 1;
+                echo $likes_row["title"];
             }
             if ($likes_row["artist"] == $user_arr[11]){
                 $sim_count[$row["compID"]] += 1;
+                echo $likes_row["artist"];
             }
 
 
@@ -141,6 +147,7 @@ if ( isset($_POST['submit']) && ($_POST['firstname']!=NULL) && ($_POST['lastname
             $part_row = $part->fetch_assoc();
             if ($part_row["club_name"] == $user_arr[12]){
                 $sim_count[$row["compID"]] += 1;
+                echo $part_row["club_name"];
             }
 
 
@@ -149,15 +156,19 @@ if ( isset($_POST['submit']) && ($_POST['firstname']!=NULL) && ($_POST['lastname
             $studies_row = $studies->fetch_assoc();
             if ($studies_row["uni_name"] == $user_arr[5]){
                 $sim_count[$row["compID"]] += 1;
+                echo $studies_row["uni_name"];
             }
-            if ($studies_row["major1"] == $user_arr[2]){
+            if ($studies_row["major1"] == $user_arr[2] && $studies_row["major1"] != ""){
                 $sim_count[$row["compID"]] += 1;
+                echo $studies_row["major1"];
             }
-            if ($studies_row["major2"] == $user_arr[3]){
+            if ($studies_row["major2"] == $user_arr[3] && $studies_row["major2"] != ""){
                 $sim_count[$row["compID"]] += 1;
+                echo $studies_row["major2"];
             }
-            if ($studies_row["minor"] == $user_arr[4]){
+            if ($studies_row["minor"] == $user_arr[4] && $studies_row["minor"] != ""){
                 $sim_count[$row["compID"]] += 1;
+                echo $studies_row["minor"];
             }
 
             $match_ageS = "SELECT age FROM Person WHERE compID = '".$row["compID"]."'";
@@ -165,12 +176,14 @@ if ( isset($_POST['submit']) && ($_POST['firstname']!=NULL) && ($_POST['lastname
             $match_age_row = $match_age->fetch_assoc();
             if ($match_age_row["age"] == $user_arr[1]){
                 $sim_count[$row["compID"]] += 1;
+                echo $match_age_row["age"];
             }
         }
     } else {
         echo "0 results";
     }
-
+    arsort($sim_count);
+    echo "<br>";
     foreach($sim_count as $x => $x_value) {
         echo "CompID=" . $x . ", Sim Count=" . $x_value;
         echo "<br>";
