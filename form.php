@@ -295,8 +295,8 @@ if ( isset($_POST['submit']) && ($_POST['firstname']!=NULL) && ($_POST['lastname
       Status:
       <select name="clubStatus1" size="1" class = "inputform" required>
         <option value ="Select Status">Select Type</option>
-        <option value ="Officer">None</option>
-        <option value="Member">Low</option>
+        <option value ="Officer">Officer</option>
+        <option value="Member">Member</option>
       </select>
       <br />
      <!-- Club 2:
@@ -339,12 +339,12 @@ if ( isset($_POST['submit']) && ($_POST['firstname']!=NULL) && ($_POST['lastname
         <option value="Member">Low</option>
       </select>
       <br />-->
-      Favorite Show:
+      Favorite TV Show/Movie:
       <input type = "text" name = "show" class = "inputform" placeholder="Movie Title" required/>
-      Genre:
+      <!--Genre:
       <select id = "genreList" name = "genreList" class = "inputform"></select>
       Year:
-      <input id="years" name="movieYear" type="number" min="1800" max="2019" class = "inputform" required>
+      <input id="years" name="movieYear" type="number" min="1800" max="2019" class = "inputform" required> -->
       <!--<select id = "years" name = "movieYear" class = "inputform"></select>-->
       <br />
        
