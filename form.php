@@ -1,4 +1,6 @@
 <?php
+session_start();
+
 class DbUtil{
    public static $user = "CS4750eaa4deb";
    public static $pass = "spring2018";
@@ -185,18 +187,32 @@ if ( isset($_POST['submit']) && ($_POST['firstname']!=NULL) && ($_POST['lastname
         echo "0 results";
     }
     arsort($sim_count);
-    echo "<br>";
+    $output = "<br>";
+    //echo "<br>";
     foreach($sim_count as $x => $x_value) {
         if ($x_value >= 3){
             $user_counter +=1;
         }
-        echo "CompID=" . $x . ", Sim Count=" . $x_value;
-        echo "<br>";
+        $userdisplay_start = "SELECT * FROM Person WHERE compID = '".$x."'";
+        $userdisplay = mysqli_query($link, $userdisplay_start);
+        $userdisplay_row = $userdisplay->fetch_assoc();
+
+        $output .= "<tr>";
+        $output .= "<td>" .$userdisplay_row["first_name"]. " " .$userdisplay_row["last_name"]. "</td>";
+        $output .= "<td>" . $userdisplay_row["compID"] . "</td>";
+        $output .= "<td>" . $userdisplay_row["age"] . "</td>";
+        $calc = ($x_value/10) * 100;
+        $output .= "<td>" . $calc . "%</td>";
+        $output .= "</tr>";
+
     }
     echo $user_arr[0];
     $setCounter = "UPDATE Person SET counter='$user_counter' WHERE compID = '".$user_arr[0]."'";
     $setCounterResult = mysqli_query($link, $setCounter);
     $link->close();
+    $_SESSION['output'] = $output;
+    echo $output;
+    header("Location: results.php");
 }
 
 // Close connection
