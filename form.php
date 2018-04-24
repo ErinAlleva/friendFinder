@@ -35,9 +35,9 @@ if ( isset($_POST['submit']) && ($_POST['firstname']!=NULL) && ($_POST['lastname
 
   //header("Location: index.php");
 
-    $firstname = $_POST['firstname'];
-    $lastname = $_POST['lastname'];
-    $compID = $_POST['compID'];
+    $firstname = ucwords(trim($_POST['firstname']));
+    $lastname = ucwords(trim($_POST['lastname']));
+    $compID = trim($_POST['compID']);
     $age = $_POST['age'];
     $gender = $_POST['gender'];
     $stmt = $link->prepare("INSERT INTO Person (compID, gender, first_name, last_name, age) VALUES (?, ?, ?, ?, ?)");
@@ -63,29 +63,29 @@ if ( isset($_POST['submit']) && ($_POST['firstname']!=NULL) && ($_POST['lastname
 
 
     //INSERT INTO `Enjoys`(`compID`, `hobby_name`, `skill_level`, `sport_name`) VALUES ([value-1],[value-2],[value-3],[value-4])
-    $hobby1 = $_POST['hobby1'];
+    $hobby1 = ucwords(trim($_POST['hobby1']));
     $hobbyLevel1 = $_POST['hobbyLevel1'];
     $stmt_two = $link->prepare("INSERT INTO Enjoys(compID, hobby_name, skill_level, sport_name) VALUES (?, ?, ?, ?)");
     $stmt_two->bind_param("ssss", $compID, $hobby1, $hobbyLevel1, $emptystring);
     $stmt_two->execute();
     $stmt_two->close();
 
-    $sport1 = $_POST['sport1'];
+    $sport1 = ucwords(trim($_POST['sport1']));
     $sportLevel1 = $_POST['sportLevel1'];
     $stmt_thr = $link->prepare("INSERT INTO Enjoys(compID, hobby_name, skill_level, sport_name) VALUES (?, ?, ?, ?)");
     $stmt_thr->bind_param("ssss", $compID, $emptystring, $sportLevel1, $sport1);
     $stmt_thr->execute();
     $stmt_thr->close();
     
-    $song = $_POST['song'];
-    $songArtist = $_POST['songArtist'];
+    $song = ucwords(trim($_POST['song']));
+    $songArtist = ucwords(trim($_POST['songArtist']));
    // VALUES ([value-1],[value-2],[value-3])
     $stmt_fou = $link->prepare("INSERT INTO Likes(compID, title, artist) VALUES (?, ?, ?)");
     $stmt_fou->bind_param("sss", $compID, $song, $songArtist);
     $stmt_fou->execute();
     $stmt_fou->close();
 
-    $club1 = $_POST['club1'];
+    $club1 = ucwords(trim($_POST['club1']));
     $clubInvolvement1 = $_POST['clubInvolvement1'];
     $clubStatus1 = $_POST['clubStatus1'];
     $stmt_fiv = $link->prepare("INSERT INTO Participates_In(compID, club_name, level_of_involvement, status) VALUES (?, ?, ?, ?)");
@@ -93,13 +93,15 @@ if ( isset($_POST['submit']) && ($_POST['firstname']!=NULL) && ($_POST['lastname
     $stmt_fiv->execute();
     $stmt_fiv->close();
     
-    $show = $_POST['show'];
+    $show = ucwords(trim($_POST['show']));
     $stmt_six = $link->prepare("INSERT INTO `Watches`(`compID`, `show_name`) VALUES (?, ?)");
     $stmt_six->bind_param("ss", $compID, $show);
     $stmt_six->execute();
     $stmt_six->close();
 
     $link->close();
+
+    echo "form submitted";
     
 }
 
