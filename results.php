@@ -18,7 +18,12 @@
 
   </header>
 
-  <div id = "main" class="container">
+<div id = "main" class="container">
+
+  <form action="" method="post" name="form">
+    <button type="submit" id="ascend" name="ascend" />Sort by Ascending</button>
+    <button type="submit" id="descend" name="descend" />Sort by Descending</button>
+  </form>
 
   <div id = "main" class="sectionDiv" style="display:flex;justify-content:center;align-items:center;">
 
@@ -30,12 +35,21 @@
         <th style="width:25%; text-align: left;">Match</th>
       </tr>
       <?php 
+        ob_start();
         session_start();
         echo $_SESSION["output"];
+        if (isset($_POST["ascend"])){
+          ob_end_clean();
+          echo $_SESSION["output_asc"];
+        }
+        if (isset($_POST["descend"])){
+          ob_end_clean();
+          echo $_SESSION["output"];
+        }
       ?>
     </table>
-  </div>
 
+  </div>
 
 </div>
 

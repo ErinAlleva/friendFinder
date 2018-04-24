@@ -46,10 +46,15 @@ if ( isset($_POST['submit']) && ($_POST['firstname']!=NULL) && ($_POST['lastname
     $gender = $_POST['gender'];
     $user_counter = 0;
     $user_status = "Bronze";
-    $stmt = $link->prepare("INSERT INTO Person (compID, gender, first_name, last_name, age, counter, status) VALUES (?, ?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param("sssssss", $compID, $gender, $firstname, $lastname, $age, $user_counter, $user_status);
+    $stmt = $link->prepare("INSERT INTO Person (compID, gender, first_name, last_name, age, counter) VALUES (?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param("ssssss", $compID, $gender, $firstname, $lastname, $age, $user_counter);
     $stmt->execute();
     $stmt->close();
+
+    $stmt_status = $link->prepare("INSERT INTO Level (compID, status) VALUES (?, ?)");
+    $stmt_status->bind_param("ss", $compID, $user_status);
+    $stmt_status->execute();
+    $stmt_status->close();
 
     $major = $_POST['major1'];
     $major2 = "null";
@@ -116,11 +121,11 @@ if ( isset($_POST['submit']) && ($_POST['firstname']!=NULL) && ($_POST['lastname
     $sim_count = array();
     if ($result->num_rows > 0) {
     // output data of each row
-        
         while($row = $result->fetch_assoc()) {
             echo $row["compID"];
 
             $sim_count[$row["compID"]] = 0;
+
             $enjoysS = "SELECT * FROM Enjoys WHERE compID = '".$row["compID"]."'";
             $enjoys = mysqli_query($link, $enjoysS);
             $enjoys_row = $enjoys->fetch_assoc();
@@ -206,12 +211,36 @@ if ( isset($_POST['submit']) && ($_POST['firstname']!=NULL) && ($_POST['lastname
         $output .= "</tr>";
 
     }
-    echo $user_arr[0];
+    
+    asort($sim_count);
+    $output_asc = "<br>";
+    //echo "<br>";
+    foreach($sim_count as $x => $x_value) {
+        if ($x_value >= 3){
+            $user_counter +=1;
+        }
+        $userdisplay_start = "SELECT * FROM Person WHERE compID = '".$x."'";
+        $userdisplay = mysqli_query($link, $userdisplay_start);
+        $userdisplay_row = $userdisplay->fetch_assoc();
+
+        $output_asc .= "<tr>";
+        $output_asc .= "<td>" .$userdisplay_row["first_name"]. " " .$userdisplay_row["last_name"]. "</td>";
+        $output_asc .= "<td>" . $userdisplay_row["compID"] . "</td>";
+        $output_asc .= "<td>" . $userdisplay_row["age"] . "</td>";
+        $calc = ($x_value/10) * 100;
+        $output_asc .= "<td>" . $calc . "%</td>";
+        $output_asc .= "</tr>";
+
+    }
+
+
     $setCounter = "UPDATE Person SET counter='$user_counter' WHERE compID = '".$user_arr[0]."'";
     $setCounterResult = mysqli_query($link, $setCounter);
     $link->close();
+
     $_SESSION['output'] = $output;
-    echo $output;
+    $_SESSION['output_asc'] = $output_asc;
+    //echo $output;
     header("Location: results.php");
 }
 
