@@ -42,8 +42,10 @@ if ( isset($_POST['submit']) && ($_POST['firstname']!=NULL) && ($_POST['lastname
     $compID = trim($_POST['compID']);
     $age = $_POST['age'];
     $gender = $_POST['gender'];
-    $stmt = $link->prepare("INSERT INTO Person (compID, gender, first_name, last_name, age) VALUES (?, ?, ?, ?, ?)");
-    $stmt->bind_param("sssss", $compID, $gender, $firstname, $lastname, $age);
+    $user_counter = 0;
+    $user_status = "Bronze";
+    $stmt = $link->prepare("INSERT INTO Person (compID, gender, first_name, last_name, age, counter, status) VALUES (?, ?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param("sssssss", $compID, $gender, $firstname, $lastname, $age, $user_counter, $user_status);
     $stmt->execute();
     $stmt->close();
 
@@ -185,10 +187,15 @@ if ( isset($_POST['submit']) && ($_POST['firstname']!=NULL) && ($_POST['lastname
     arsort($sim_count);
     echo "<br>";
     foreach($sim_count as $x => $x_value) {
+        if ($x_value >= 3){
+            $user_counter +=1;
+        }
         echo "CompID=" . $x . ", Sim Count=" . $x_value;
         echo "<br>";
     }
-    
+    echo $user_arr[0];
+    $setCounter = "UPDATE Person SET counter='$user_counter' WHERE compID = '".$user_arr[0]."'";
+    $setCounterResult = mysqli_query($link, $setCounter);
     $link->close();
 }
 
