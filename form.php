@@ -209,6 +209,11 @@ if ( isset($_POST['submit']) && ($_POST['firstname']!=NULL) && ($_POST['lastname
     arsort($sim_count);
     $output = "<br>";
     //echo "<br>";
+
+    $myfile = fopen("matches_output.xml", "w");
+    $matches = "<Matches>"."\n";
+    fwrite($myfile, $matches);
+
     foreach($sim_count as $x => $x_value) {
         if ($x_value >= 3){
             $user_counter +=1;
@@ -225,8 +230,17 @@ if ( isset($_POST['submit']) && ($_POST['firstname']!=NULL) && ($_POST['lastname
         $output .= "<td>" . $calc . "%</td>";
         $output .= "</tr>";
 
+        $txt = "\t" . "<Person>" . "\n";
+        $txt .= "\t" . "\t" . "<Name>" .$userdisplay_row["first_name"]. " " .$userdisplay_row["last_name"]. "</Name>" . "\n";
+        $txt .= "\t" . "\t" . "<compID>" .$userdisplay_row["compID"]. "</compID>". "\n";
+        $txt .= "\t" . "\t" . "<Match>" .$calc. "</Match>". "\n";
+        $txt .= "\t" . "<\Person>" . "\n";
+        fwrite($myfile, $txt);
     }
-    
+    $matchesEnd = "</Matches>";
+    fwrite($myfile, $matchesEnd);
+    fclose($myfile);
+
     asort($sim_count);
     $output_asc = "<br>";
     //echo "<br>";
@@ -257,6 +271,7 @@ if ( isset($_POST['submit']) && ($_POST['firstname']!=NULL) && ($_POST['lastname
     $_SESSION['output_asc'] = $output_asc;
     $_SESSION['compID'] = $user_arr[0];
     $_SESSION['name'] = $firstname;
+    $_SESSION['arr'] = 
     //echo $output;
     header("Location: results.php");
 }

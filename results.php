@@ -47,6 +47,7 @@ $link = DbUtil::loginConnection();
   <form action="" method="post" name="form">
     <button type="submit" id="ascend" name="ascend" />Sort by Ascending</button>
     <button type="submit" id="descend" name="descend" />Sort by Descending</button>
+    <a href="matches_output.xml" download="matches_output">Download Match Data</a>
     <button type="submit" id="delete" name="delete" style="float: right;"/>Delete user</button>
   </form>
 
