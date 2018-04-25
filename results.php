@@ -1,3 +1,27 @@
+<?php
+
+class DbUtil{
+   public static $user = "CS4750eaa4deb";
+   public static $pass = "spring2018";
+   public static $host = "stardock.cs.virginia.edu";
+   public static $schema = "CS4750eaa4de";
+
+   public static function loginConnection() {
+      $db = new mysqli(DbUtil::$host, DbUtil::$user,
+      DbUtil::$pass, DbUtil::$schema);
+      if($db->connect_errno) {
+        echo "fail";
+        $db->close();
+        exit();
+      }
+      return $db;
+  }
+
+}
+
+$link = DbUtil::loginConnection();
+?>
+
 <!DOCTYPE html>
 <html>
 
@@ -23,6 +47,7 @@
   <form action="" method="post" name="form">
     <button type="submit" id="ascend" name="ascend" />Sort by Ascending</button>
     <button type="submit" id="descend" name="descend" />Sort by Descending</button>
+    <button type="submit" id="delete" name="delete" style="float: right;"/>Delete user</button>
   </form>
 
   <div id = "main" class="sectionDiv" style="display:flex;justify-content:center;align-items:center;">
@@ -42,9 +67,18 @@
           ob_end_clean();
           echo $_SESSION["output_asc"];
         }
+
         if (isset($_POST["descend"])){
           ob_end_clean();
           echo $_SESSION["output"];
+        }
+
+        if (isset($_POST["delete"])){
+          ob_end_clean();
+          $delete = "DELETE FROM Person WHERE compID = '".$_SESSION["compID"]."'";
+          $delete_query = mysqli_query($link, $delete);
+          header("Location: form.php");
+          session_destroy();
         }
       ?>
     </table>

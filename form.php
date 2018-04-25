@@ -240,6 +240,8 @@ if ( isset($_POST['submit']) && ($_POST['firstname']!=NULL) && ($_POST['lastname
 
     $_SESSION['output'] = $output;
     $_SESSION['output_asc'] = $output_asc;
+    $_SESSION['compID'] = $user_arr[0];
+    $_SESSION['name'] = $firstname;
     //echo $output;
     header("Location: results.php");
 }
