@@ -81,12 +81,19 @@ if ( isset($_POST['submit']) && ($_POST['firstname']!=NULL) && ($_POST['lastname
     $stmt_two->execute();
     $stmt_two->close();
 
+    $hobby = "INSERT INTO Hobby (hobby_name, type) VALUES ('".$hobby1."', '".$_POST["hobbyType1"]."')";
+    $hobbyInsert = mysqli_query($link, $hobby);
+
+
     $sport1 = ucwords(trim($_POST['sport1']));
     $sportLevel1 = $_POST['sportLevel1'];
     $stmt_thr = $link->prepare("INSERT INTO Enjoys(compID, hobby_name, skill_level, sport_name) VALUES (?, ?, ?, ?)");
     $stmt_thr->bind_param("ssss", $compID, $emptystring, $sportLevel1, $sport1);
     $stmt_thr->execute();
     $stmt_thr->close();
+
+    $sport = "INSERT INTO Sport (sport_name, type, classification) VALUES ('".$sport1."', '".$_POST["sportType1"]."', '".$_POST["sportClassification1"]."')";
+    $sportInsert = mysqli_query($link, $sport);
     
     $song = ucwords(trim($_POST['song']));
     $songArtist = ucwords(trim($_POST['songArtist']));
@@ -96,6 +103,9 @@ if ( isset($_POST['submit']) && ($_POST['firstname']!=NULL) && ($_POST['lastname
     $stmt_fou->execute();
     $stmt_fou->close();
 
+    $music = "INSERT INTO Music (title, artist) VALUES ('".$song."', '".$songArtist."')";
+    $songInsert = mysqli_query($link, $music);
+
     $club1 = ucwords(trim($_POST['club1']));
     $clubInvolvement1 = $_POST['clubInvolvement1'];
     $clubStatus1 = $_POST['clubStatus1'];
@@ -103,6 +113,9 @@ if ( isset($_POST['submit']) && ($_POST['firstname']!=NULL) && ($_POST['lastname
     $stmt_fiv->bind_param("ssss", $compID, $club1, $clubInvolvement1, $clubStatus1);
     $stmt_fiv->execute();
     $stmt_fiv->close();
+
+    $club = "INSERT INTO Club (club_name, type) VALUES ('".$club1."', '".$clubType1."')";
+    $clubInsert = mysqli_query($link, $club);
     
     $show = ucwords(trim($_POST['show']));
     $stmt_six = $link->prepare("INSERT INTO `Watches`(`compID`, `show_name`) VALUES (?, ?)");
@@ -110,6 +123,8 @@ if ( isset($_POST['submit']) && ($_POST['firstname']!=NULL) && ($_POST['lastname
     $stmt_six->execute();
     $stmt_six->close();
 
+    $showInsert = "INSERT INTO Movies_TVShows (show_name, year_released) VALUES ('".$show."', '".$_POST['showYear']."')";
+    $showInsert1 = mysqli_query($link, $showInsert);
     
     echo "form submitted";
 
@@ -485,9 +500,9 @@ if ( isset($_POST['submit']) && ($_POST['firstname']!=NULL) && ($_POST['lastname
       Favorite TV Show/Movie:
       <input type = "text" name = "show" class = "inputform" placeholder="Movie Title" required/>
       <!--Genre:
-      <select id = "genreList" name = "genreList" class = "inputform"></select>
+      <select id = "genreList" name = "genreList" class = "inputform"></select>-->
       Year:
-      <input id="years" name="movieYear" type="number" min="1800" max="2019" class = "inputform" required> -->
+      <input id="showYear" name="showYear" type="number" min="1800" max="2019" class = "inputform" required>
       <!--<select id = "years" name = "movieYear" class = "inputform"></select>-->
       <br />
        
