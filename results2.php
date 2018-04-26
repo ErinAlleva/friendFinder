@@ -26,7 +26,7 @@
 
 	</div>
 
-	<aside style="width:56%;height:98%;background-image: url(images/stepBrothers.jpg);float:center;padding:30px" ></aside>
+	<aside style="width:56%;height:98%;background-image: url(images/resultspic.jpg);float:center;padding:30px" ></aside>
 	<main>
 		<h1 class="mb-5">Time to find your new BEST FRIEND</h1>
 
