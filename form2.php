@@ -248,7 +248,7 @@ if ( isset($_POST['submit']) && ($_POST['firstname']!=NULL) && ($_POST['lastname
     $_SESSION['output_asc'] = $output_asc;
     $_SESSION['resultsArray'] = $resultsArray;
     //echo $output;
-    header("Location: results.php");
+    header("Location: results2.php");
 }
 
 // Close connection
